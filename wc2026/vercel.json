@@ -1,14 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/confirm-settlements",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/cron/void-postponed",
-      "schedule": "0 6 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",
