@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { @apply border-pitch-600; }
+
+  ::-webkit-scrollbar { @apply w-1.5; }
+  ::-webkit-scrollbar-track { @apply bg-pitch-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-pitch-600 rounded-full hover:bg-pitch-500; }
+
+  ::selection { @apply bg-neon/20 text-neon; }
+}
+
+@layer components {
+  .text-gold {
+    color: #FFD700;
+  }
+}
