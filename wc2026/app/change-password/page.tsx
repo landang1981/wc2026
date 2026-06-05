@@ -8,15 +8,16 @@ export default async function ChangePasswordPage() {
 
   if (!user) redirect('/login')
 
+  // Chỉ redirect về /matches nếu là forced change (must_change_password = true mà không phải admin)
+  // Còn user tự vào từ Profile thì cho phép đổi mật khẩu bình thường
   const { data: profile } = await supabase
     .from('profiles')
-    .select('must_change_password')
+    .select('must_change_password, role')
     .eq('id', user.id)
     .single()
 
-  if (profile && !profile.must_change_password) {
-    redirect('/matches')
-  }
+  // Nếu profile null hoặc role là admin -> cho phép vào luôn
+  // Nếu must_change_password = false (đã đổi rồi) -> vẫn cho vào (không redirect nữa)
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-stadium-gradient">
