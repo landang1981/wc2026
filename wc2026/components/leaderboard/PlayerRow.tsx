@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils/cn'
 import type { LeaderboardEntry } from '@/types'
+import Link from 'next/link'
 
 const RANK_STYLES: Record<number, string> = {
   1: 'text-gold font-display text-2xl',
@@ -9,10 +10,12 @@ const RANK_STYLES: Record<number, string> = {
 
 export function PlayerRow({ entry, isCurrentUser }: { entry: LeaderboardEntry; isCurrentUser: boolean }) {
   return (
-    <div
+    <Link
+      href={`/leaderboard/${entry.user_id}`}
       className={cn(
         'grid grid-cols-[48px_1fr_80px_80px_80px] items-center gap-2 px-5 py-3.5',
         'border-b border-pitch-700 last:border-0 transition-colors duration-200',
+        'hover:bg-pitch-800/80 cursor-pointer',
         isCurrentUser && 'bg-pitch-800',
         entry.rank <= 3 && 'animate-rank-change'
       )}
@@ -44,6 +47,6 @@ export function PlayerRow({ entry, isCurrentUser }: { entry: LeaderboardEntry; i
         <p className="font-mono text-sm font-bold text-result-lose">{entry.total_penalty_points}</p>
         <p className="text-xs text-slate-600">Phạt</p>
       </div>
-    </div>
+    </Link>
   )
 }

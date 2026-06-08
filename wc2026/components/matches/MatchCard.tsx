@@ -24,6 +24,7 @@ export type MatchCardProps = {
 export function MatchCard({ match, myBet, onBetSelect, isLocked }: MatchCardProps) {
   const isSettled = match.status === 'SETTLED'
   const canBet = !isSettled && !isLocked && match.status === 'SCHEDULED'
+  const hasStarted = new Date(match.match_datetime) <= new Date()
 
   return (
     <Card className="hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200">
@@ -34,9 +35,9 @@ export function MatchCard({ match, myBet, onBetSelect, isLocked }: MatchCardProp
         </div>
 
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 my-4">
-          <div className="text-right">
+          <div className="text-right min-w-0">
             <div className="text-2xl">{match.home_team?.flag_emoji ?? '🏳️'}</div>
-            <div className="font-display text-section text-white leading-tight">{match.home_team?.name ?? 'TBD'}</div>
+            <div className="font-display text-section text-white leading-tight truncate">{match.home_team?.name ?? 'TBD'}</div>
           </div>
 
           <div className="text-center flex flex-col items-center gap-1">
@@ -49,28 +50,43 @@ export function MatchCard({ match, myBet, onBetSelect, isLocked }: MatchCardProp
             )}
           </div>
 
-          <div className="text-left">
+          <div className="text-left min-w-0">
             <div className="text-2xl">{match.away_team?.flag_emoji ?? '🏳️'}</div>
-            <div className="font-display text-section text-white leading-tight">{match.away_team?.name ?? 'TBD'}</div>
+            <div className="font-display text-section text-white leading-tight truncate">{match.away_team?.name ?? 'TBD'}</div>
           </div>
         </div>
 
-        {myBet ? (
+        {myBet && myBet.prediction !== 'NOT_BET' ? (
+          <div className="mt-4 pt-4 border-t border-pitch-700">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-slate-500">Dự đoán của bạn</span>
+              <span className={isSettled ? (myBet.prediction === match.result ? 'text-neon' : 'text-result-lose') : 'text-slate-400'}>
+                {myBet.prediction === 'HOME_WIN' ? (match.home_team?.name ?? 'Chủ nhà') : myBet.prediction === 'AWAY_WIN' ? (match.away_team?.name ?? 'Khách') : 'Hòa'}
+              </span>
+            </div>
+            {/* Cho phép đổi dự đoán nếu trận chưa bắt đầu */}
+            {canBet && !hasStarted && onBetSelect && (
+              <>
+                <p className="text-xs text-slate-500 mb-2 text-center">Thay đổi dự đoán</p>
+                <BetSelector
+                  value={myBet.prediction}
+                  onChange={onBetSelect}
+                  homeTeam={match.home_team?.name ?? 'Chủ nhà'}
+                  awayTeam={match.away_team?.name ?? 'Khách'}
+                />
+              </>
+            )}
+          </div>
+        ) : myBet?.prediction === 'NOT_BET' ? (
           <div className="mt-4 pt-4 border-t border-pitch-700">
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-500">Dự đoán của bạn</span>
-              {myBet.prediction === 'NOT_BET' ? (
-                <div className="text-right">
-                  <span className="text-xs text-slate-500 italic">Không đặt cược</span>
-                  {isSettled && (
-                    <p className="text-xs font-bold text-result-lose">✗ Sai (+50)</p>
-                  )}
-                </div>
-              ) : (
-                <span className={isSettled ? (myBet.prediction === match.result ? 'text-neon' : 'text-result-lose') : 'text-slate-400'}>
-                  {myBet.prediction === 'HOME_WIN' ? (match.home_team?.name ?? 'Chủ nhà') : myBet.prediction === 'AWAY_WIN' ? (match.away_team?.name ?? 'Khách') : 'Hòa'}
-                </span>
-              )}
+              <div className="text-right">
+                <span className="text-xs text-slate-500 italic">Không đặt cược</span>
+                {isSettled && (
+                  <p className="text-xs font-bold text-result-lose">✗ Sai (+50)</p>
+                )}
+              </div>
             </div>
           </div>
         ) : canBet && onBetSelect ? (

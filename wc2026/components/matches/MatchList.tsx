@@ -51,7 +51,7 @@ export function MatchList({ matches, onBetSelect, isLocked }: MatchListProps) {
             <div className="flex-1 h-px bg-pitch-700" />
             <span className="text-xs text-slate-500">{roundMatches.length} trận</span>
           </div>
-          <div className="grid gap-4 grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             {roundMatches.map(match => {
               const cardProps: MatchCardProps = {
                 match,
