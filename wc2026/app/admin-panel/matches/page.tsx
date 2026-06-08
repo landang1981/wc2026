@@ -4,6 +4,8 @@ import { StatusBadge } from '@/components/ui/Badge'
 import { redirect } from 'next/navigation'
 import type { MatchStatus } from '@/types'
 
+const SETTLED_STATUSES: MatchStatus[] = ['SETTLED', 'VOID', 'POSTPONED', 'ABANDONED']
+
 type HomeTeam = { name: string; flag_emoji: string | null } | null
 type AwayTeam = { name: string; flag_emoji: string | null } | null
 type Round = { name: string } | null
@@ -62,9 +64,14 @@ export default async function AdminMatchesPage() {
       away_team:teams!matches_away_team_id_fkey(name, flag_emoji),
       round:match_rounds(name)
     `)
-    .order('match_datetime', { ascending: false })
+    .order('match_datetime', { ascending: true })
 
-  const typedMatches = (matches ?? []) as MatchRow[]
+  const typedMatches = ((matches ?? []) as MatchRow[]).sort((a, b) => {
+    const aSettled = SETTLED_STATUSES.includes(a.status)
+    const bSettled = SETTLED_STATUSES.includes(b.status)
+    if (aSettled !== bSettled) return aSettled ? 1 : -1
+    return new Date(a.match_datetime).getTime() - new Date(b.match_datetime).getTime()
+  })
 
   return (
     <div className="max-w-6xl mx-auto">
