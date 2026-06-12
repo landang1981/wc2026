@@ -31,7 +31,7 @@ export function MatchCard({ match, myBet, onBetSelect, isLocked }: MatchCardProp
       <CardBody>
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs text-slate-500 font-medium">{match.round?.name ?? 'Trận đấu'}</span>
-          <StatusBadge status={match.status} />
+          <StatusBadge status={match.status} hasStarted={hasStarted} />
         </div>
 
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 my-4">

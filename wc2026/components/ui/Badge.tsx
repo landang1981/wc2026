@@ -18,11 +18,15 @@ const ROLE_CONFIG: Record<UserRole, { label: string; className: string }> = {
   superuser: { label: 'Super', className: 'bg-neon/15 text-neon border-neon/30' },
 }
 
-export function StatusBadge({ status }: { status: MatchStatus }) {
+export function StatusBadge({ status, hasStarted }: { status: MatchStatus; hasStarted?: boolean }) {
   const cfg = STATUS_CONFIG[status]
+  const label = status === 'SCHEDULED' && hasStarted ? 'Đã diễn ra' : cfg.label
+  const className = status === 'SCHEDULED' && hasStarted
+    ? 'bg-pitch-700 text-slate-500 border-pitch-600'
+    : cfg.className
   return (
-    <span className={cn('inline-flex items-center px-2.5 py-0.5 rounded-pill text-xs font-semibold border', cfg.className)}>
-      {cfg.label}
+    <span className={cn('inline-flex items-center px-2.5 py-0.5 rounded-pill text-xs font-semibold border', className)}>
+      {label}
     </span>
   )
 }
